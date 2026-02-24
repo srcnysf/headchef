@@ -8,7 +8,7 @@ import type { GeneratorOptions } from '../src/types.js';
 function createOptions(targetDir: string, overrides: Partial<GeneratorOptions> = {}): GeneratorOptions {
   return {
     targetDir,
-    ides: ['claude', 'cursor', 'windsurf', 'antigravity'],
+    ides: ['claude', 'codex', 'cursor', 'windsurf', 'antigravity', 'copilot', 'cline', 'jetbrains', 'augment', 'agentsmd'],
     framework: 'general',
     force: false,
     dryRun: false,
@@ -32,9 +32,15 @@ describe('generateConfigs', () => {
     expect(result.generated.length).toBeGreaterThan(0);
     expect(result.skipped).toHaveLength(0);
     expect(await fs.pathExists(path.join(tmpDir, 'CLAUDE.md'))).toBe(true);
+    expect(await fs.pathExists(path.join(tmpDir, '.codex/instructions.md'))).toBe(true);
     expect(await fs.pathExists(path.join(tmpDir, '.cursor/rules/general.mdc'))).toBe(true);
     expect(await fs.pathExists(path.join(tmpDir, '.windsurf/rules/general.md'))).toBe(true);
     expect(await fs.pathExists(path.join(tmpDir, 'GEMINI.md'))).toBe(true);
+    expect(await fs.pathExists(path.join(tmpDir, '.github/copilot-instructions.md'))).toBe(true);
+    expect(await fs.pathExists(path.join(tmpDir, '.clinerules'))).toBe(true);
+    expect(await fs.pathExists(path.join(tmpDir, '.aiassistant/rules/general.md'))).toBe(true);
+    expect(await fs.pathExists(path.join(tmpDir, '.augment/rules/general.md'))).toBe(true);
+    expect(await fs.pathExists(path.join(tmpDir, 'AGENTS.md'))).toBe(true);
     expect(await fs.pathExists(path.join(tmpDir, '.gitignore.headchef'))).toBe(true);
   });
 

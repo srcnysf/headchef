@@ -16,12 +16,18 @@ describe('CLI integration', () => {
     await fs.remove(tmpDir);
   });
 
-  it('should generate all configs with default options', () => {
-    execSync(`npx tsx src/index.ts --target ${tmpDir}`, { cwd });
+  it('should generate all configs with --no-interactive', () => {
+    execSync(`npx tsx src/index.ts --target ${tmpDir} --no-interactive`, { cwd });
     expect(fs.pathExistsSync(path.join(tmpDir, 'CLAUDE.md'))).toBe(true);
+    expect(fs.pathExistsSync(path.join(tmpDir, '.codex/instructions.md'))).toBe(true);
     expect(fs.pathExistsSync(path.join(tmpDir, '.cursor/rules/general.mdc'))).toBe(true);
     expect(fs.pathExistsSync(path.join(tmpDir, '.windsurf/rules/general.md'))).toBe(true);
     expect(fs.pathExistsSync(path.join(tmpDir, 'GEMINI.md'))).toBe(true);
+    expect(fs.pathExistsSync(path.join(tmpDir, '.github/copilot-instructions.md'))).toBe(true);
+    expect(fs.pathExistsSync(path.join(tmpDir, '.clinerules'))).toBe(true);
+    expect(fs.pathExistsSync(path.join(tmpDir, '.aiassistant/rules/general.md'))).toBe(true);
+    expect(fs.pathExistsSync(path.join(tmpDir, '.augment/rules/general.md'))).toBe(true);
+    expect(fs.pathExistsSync(path.join(tmpDir, 'AGENTS.md'))).toBe(true);
   });
 
   it('should only generate claude with --only claude', () => {
@@ -30,15 +36,29 @@ describe('CLI integration', () => {
     expect(fs.pathExistsSync(path.join(tmpDir, '.cursor/rules/general.mdc'))).toBe(false);
   });
 
-  it('should show --list output', () => {
+  it('should only generate codex with --only codex', () => {
+    execSync(`npx tsx src/index.ts --target ${tmpDir} --only codex`, { cwd });
+    expect(fs.pathExistsSync(path.join(tmpDir, '.codex/instructions.md'))).toBe(true);
+    expect(fs.pathExistsSync(path.join(tmpDir, 'CLAUDE.md'))).toBe(false);
+  });
+
+  it('should show --list output with display names', () => {
     const output = execSync(`npx tsx src/index.ts --list`, { cwd, encoding: 'utf-8' });
-    expect(output).toContain('claude');
-    expect(output).toContain('cursor');
+    expect(output).toContain('Claude Code');
+    expect(output).toContain('OpenAI Codex');
+    expect(output).toContain('Cursor');
+    expect(output).toContain('Windsurf');
+    expect(output).toContain('Google Antigravity');
+    expect(output).toContain('GitHub Copilot');
+    expect(output).toContain('Cline / Roo Code');
+    expect(output).toContain('JetBrains AI');
+    expect(output).toContain('Augment Code');
+    expect(output).toContain('AGENTS.md');
     expect(output).toContain('flutter');
   });
 
   it('should show dry-run output without writing', () => {
-    const output = execSync(`npx tsx src/index.ts --target ${tmpDir} --dry-run`, { cwd, encoding: 'utf-8' });
+    const output = execSync(`npx tsx src/index.ts --target ${tmpDir} --dry-run --no-interactive`, { cwd, encoding: 'utf-8' });
     expect(output).toContain('CLAUDE.md');
     expect(fs.pathExistsSync(path.join(tmpDir, 'CLAUDE.md'))).toBe(false);
   });
@@ -54,5 +74,17 @@ describe('CLI integration', () => {
   it('should generate framework-specific files', () => {
     execSync(`npx tsx src/index.ts --target ${tmpDir} --framework flutter --only cursor`, { cwd });
     expect(fs.pathExistsSync(path.join(tmpDir, '.cursor/rules/flutter.mdc'))).toBe(true);
+  });
+
+  it('should generate only copilot with --only copilot', () => {
+    execSync(`npx tsx src/index.ts --target ${tmpDir} --only copilot`, { cwd });
+    expect(fs.pathExistsSync(path.join(tmpDir, '.github/copilot-instructions.md'))).toBe(true);
+    expect(fs.pathExistsSync(path.join(tmpDir, 'CLAUDE.md'))).toBe(false);
+  });
+
+  it('should generate only agentsmd with --only agentsmd', () => {
+    execSync(`npx tsx src/index.ts --target ${tmpDir} --only agentsmd`, { cwd });
+    expect(fs.pathExistsSync(path.join(tmpDir, 'AGENTS.md'))).toBe(true);
+    expect(fs.pathExistsSync(path.join(tmpDir, 'CLAUDE.md'))).toBe(false);
   });
 });
