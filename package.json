@@ -1,9 +1,10 @@
 {
-  "name": "create-headchef",
-  "version": "0.2.0",
-  "description": "Scaffold AI IDE configs for Claude Code, Cursor, Windsurf, and Google Antigravity",
+  "name": "headchef",
+  "version": "0.3.0",
+  "description": "Scaffold AI IDE configs for 10 code editors — Claude, Codex, Cursor, Windsurf, Antigravity, Copilot, Cline, JetBrains, Augment, and AGENTS.md",
   "type": "module",
   "bin": {
+    "headchef": "./dist/index.js",
     "create-headchef": "./dist/index.js"
   },
   "scripts": {
@@ -21,12 +22,18 @@
     "cli",
     "ai",
     "ide",
+    "scaffold",
+    "headchef",
     "claude",
+    "codex",
     "cursor",
     "windsurf",
     "antigravity",
-    "scaffold",
-    "headchef"
+    "copilot",
+    "cline",
+    "jetbrains",
+    "augment",
+    "agents-md"
   ],
   "author": "Eventually Solutions",
   "license": "MIT",

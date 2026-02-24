@@ -1,117 +1,62 @@
 import { Command } from 'commander';
 import chalk from 'chalk';
-import { generateConfigs } from './generator.js';
-import { IDE_TYPES, IDE_METADATA, FRAMEWORKS, isValidIdeType, isValidFramework } from './types.js';
-import { promptIdeSelection, promptFrameworkSelection } from './prompt.js';
-import type { IdeType, Framework } from './types.js';
+import fs from 'fs-extra';
+import path from 'path';
+import { attachSharedOptions, buildCommandOptions, executeGeneration, printList } from './commands/shared.js';
 
 const program = new Command();
 
 program
-  .name('create-headchef')
-  .description('Scaffold AI IDE configs for Claude Code, Cursor, Windsurf, and more')
-  .version('0.2.0')
-  .option('--only <ides...>', 'Only generate configs for specified IDEs')
-  .option('--exclude <ides...>', 'Exclude specified IDEs')
-  .option('--framework <framework>', 'Framework-specific rules layer')
-  .option('--force', 'Overwrite existing config files', false)
-  .option('--dry-run', 'Preview files without writing', false)
-  .option('--list', 'List available IDEs and frameworks')
-  .option('--no-interactive', 'Skip interactive prompts (use all IDEs)')
+  .name('headchef')
+  .description('Scaffold AI IDE configs for 10 code editors')
+  .version('0.3.0');
+
+const initCommand = new Command('init')
+  .description('Scaffold AI IDE configs into the current directory')
   .option('--target <dir>', 'Target directory', process.cwd())
   .action(async (options) => {
-    if (options.list) {
-      printList();
-      return;
-    }
-    const hasIdeFlags = options.only || options.exclude;
-    const hasFrameworkFlag = options.framework;
-    const isInteractive = options.interactive !== false && !hasIdeFlags;
-    let ides: IdeType[];
-    let framework: Framework;
-    if (isInteractive) {
-      console.log(chalk.bold('\n🍸 headchef - Mixing your AI IDE configs...\n'));
-      ides = await promptIdeSelection();
-      if (ides.length === 0) {
-        console.log(chalk.yellow('No IDEs selected. Nothing to do.\n'));
-        return;
-      }
-      framework = hasFrameworkFlag ? resolveFramework(options.framework) : await promptFrameworkSelection();
-    } else {
-      ides = resolveIdes(options.only, options.exclude);
-      framework = resolveFramework(options.framework || 'general');
-      console.log(chalk.bold('\n🍸 headchef - Mixing your AI IDE configs...\n'));
-    }
-    const result = await generateConfigs({
+    await executeGeneration({
       targetDir: options.target,
-      ides,
-      framework,
-      force: options.force,
-      dryRun: options.dryRun,
+      options: buildCommandOptions(options),
     });
-    printResult(result, options.dryRun);
   });
 
-function resolveIdes(only?: string[], exclude?: string[]): IdeType[] {
-  let ides: IdeType[] = [...IDE_TYPES];
-  if (only) {
-    const validated = only.filter(isValidIdeType);
-    if (validated.length === 0) {
-      console.error(chalk.red(`Invalid IDE types. Available: ${IDE_TYPES.join(', ')}`));
-      process.exit(1);
+const createCommand = new Command('create')
+  .description('Create a new project directory and scaffold AI IDE configs')
+  .argument('<projectname>', 'Name of the new project directory')
+  .action(async (projectname: string, options) => {
+    const targetDir = path.resolve(process.cwd(), projectname);
+    if (!options.dryRun) {
+      await fs.ensureDir(targetDir);
     }
-    ides = validated;
-  }
-  if (exclude) {
-    const excludeSet = new Set(exclude.filter(isValidIdeType));
-    ides = ides.filter(ide => !excludeSet.has(ide));
-  }
-  return ides;
+    console.log(chalk.dim(`\nProject directory: ${targetDir}`));
+    await executeGeneration({
+      targetDir,
+      options: buildCommandOptions(options),
+    });
+    if (!options.dryRun) {
+      printNextSteps(projectname);
+    }
+  });
+
+const listCommand = new Command('list')
+  .description('List available IDEs and frameworks')
+  .action(() => {
+    printList();
+  });
+
+function printNextSteps(projectname: string): void {
+  console.log(chalk.bold('Next steps:'));
+  console.log(chalk.dim(`  cd ${projectname}`));
+  console.log(chalk.dim('  git init'));
+  console.log(chalk.dim('  npm init -y\n'));
 }
 
-function resolveFramework(value: string): Framework {
-  if (!isValidFramework(value)) {
-    console.error(chalk.red(`Invalid framework "${value}". Available: ${FRAMEWORKS.join(', ')}`));
-    process.exit(1);
-  }
-  return value;
-}
+attachSharedOptions(initCommand);
+attachSharedOptions(createCommand);
 
-function printList(): void {
-  console.log(chalk.bold('\nAvailable IDEs:'));
-  for (const ide of IDE_TYPES) {
-    const meta = IDE_METADATA[ide];
-    console.log(`  - ${meta.displayName.padEnd(22)} (${ide})`);
-  }
-  console.log(chalk.bold('\nAvailable Frameworks:'));
-  for (const fw of FRAMEWORKS) {
-    console.log(`  - ${fw}`);
-  }
-  console.log();
-}
-
-function printResult(result: { generated: readonly string[]; skipped: readonly string[] }, isDryRun: boolean): void {
-  if (result.skipped.length > 0) {
-    console.log(chalk.yellow('⚠ Existing configs detected (skipped):'));
-    for (const file of result.skipped) {
-      console.log(chalk.yellow(`  ├── ${file}`));
-    }
-    console.log();
-  }
-  if (result.generated.length > 0) {
-    const label = isDryRun ? 'Would generate:' : 'Generated:';
-    console.log(chalk.green(`✓ ${label}`));
-    for (const file of result.generated) {
-      console.log(chalk.green(`  ├── ${file}`));
-    }
-    console.log();
-  }
-  if (result.skipped.length > 0 && !isDryRun) {
-    console.log(chalk.dim('Use --force to overwrite existing files.\n'));
-  }
-  if (result.generated.length === 0 && result.skipped.length === 0) {
-    console.log(chalk.yellow('No files to generate.\n'));
-  }
-}
+program.addCommand(initCommand);
+program.addCommand(createCommand);
+program.addCommand(listCommand);
 
 program.parse();
