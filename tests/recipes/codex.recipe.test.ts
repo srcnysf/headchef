@@ -20,10 +20,10 @@ describe('CodexRecipe', () => {
     expect(recipe.name).toBe('codex');
   });
 
-  it('should generate expected files for general framework', () => {
+  it('should generate config.toml', () => {
     const files = recipe.generateFiles(createOptions());
     const paths = files.map(f => f.path);
-    expect(paths).toContain('.codex/instructions.md');
+    expect(paths).toContain('.codex/config.toml');
   });
 
   it('should generate files with non-empty content', () => {
@@ -33,17 +33,15 @@ describe('CodexRecipe', () => {
     }
   });
 
-  it('should include Flutter content for flutter framework', () => {
-    const files = recipe.generateFiles(createOptions({ framework: 'flutter' }));
-    const instructionsFile = files.find(f => f.path === '.codex/instructions.md');
-    expect(instructionsFile).toBeDefined();
-    expect(instructionsFile!.content).toContain('Flutter');
+  it('should reference AGENTS.md in config', () => {
+    const files = recipe.generateFiles(createOptions());
+    const configFile = files.find(f => f.path === '.codex/config.toml');
+    expect(configFile).toBeDefined();
+    expect(configFile!.content).toContain('AGENTS.md');
   });
 
-  it('should not include Flutter content for general framework', () => {
+  it('should generate exactly 1 file', () => {
     const files = recipe.generateFiles(createOptions());
-    const instructionsFile = files.find(f => f.path === '.codex/instructions.md');
-    expect(instructionsFile).toBeDefined();
-    expect(instructionsFile!.content).not.toContain('Flutter');
+    expect(files).toHaveLength(1);
   });
 });

@@ -32,7 +32,7 @@ describe('generateConfigs', () => {
     expect(result.generated.length).toBeGreaterThan(0);
     expect(result.skipped).toHaveLength(0);
     expect(await fs.pathExists(path.join(tmpDir, 'CLAUDE.md'))).toBe(true);
-    expect(await fs.pathExists(path.join(tmpDir, '.codex/instructions.md'))).toBe(true);
+    expect(await fs.pathExists(path.join(tmpDir, '.codex/config.toml'))).toBe(true);
     expect(await fs.pathExists(path.join(tmpDir, '.cursor/rules/general.mdc'))).toBe(true);
     expect(await fs.pathExists(path.join(tmpDir, '.windsurf/rules/general.md'))).toBe(true);
     expect(await fs.pathExists(path.join(tmpDir, 'GEMINI.md'))).toBe(true);

@@ -20,7 +20,7 @@ describe('init subcommand', () => {
   it('should generate all configs with --no-interactive', () => {
     execSync(`npx tsx src/index.ts init --target ${tmpDir} --no-interactive`, { cwd });
     expect(fs.pathExistsSync(path.join(tmpDir, 'CLAUDE.md'))).toBe(true);
-    expect(fs.pathExistsSync(path.join(tmpDir, '.codex/instructions.md'))).toBe(true);
+    expect(fs.pathExistsSync(path.join(tmpDir, '.codex/config.toml'))).toBe(true);
     expect(fs.pathExistsSync(path.join(tmpDir, '.cursor/rules/general.mdc'))).toBe(true);
     expect(fs.pathExistsSync(path.join(tmpDir, '.windsurf/rules/general.md'))).toBe(true);
     expect(fs.pathExistsSync(path.join(tmpDir, 'GEMINI.md'))).toBe(true);
@@ -39,7 +39,7 @@ describe('init subcommand', () => {
 
   it('should only generate codex with --only codex', () => {
     execSync(`npx tsx src/index.ts init --target ${tmpDir} --only codex`, { cwd });
-    expect(fs.pathExistsSync(path.join(tmpDir, '.codex/instructions.md'))).toBe(true);
+    expect(fs.pathExistsSync(path.join(tmpDir, '.codex/config.toml'))).toBe(true);
     expect(fs.pathExistsSync(path.join(tmpDir, 'CLAUDE.md'))).toBe(false);
   });
 
