@@ -42,6 +42,11 @@ export interface GeneratorResult {
   readonly generated: readonly string[];
   readonly skipped: readonly string[];
 }
+export interface GenerationPlan {
+  readonly filesToWrite: readonly FileEntry[];
+  readonly conflicts: readonly string[];
+}
+
 
 export interface Recipe {
   readonly name: IdeType;

@@ -26,3 +26,19 @@ export async function promptFrameworkSelection(): Promise<Framework> {
   });
   return selected as Framework;
 }
+
+export async function promptOverwriteSelection(conflicts: readonly string[]): Promise<string[]> {
+  if (conflicts.length === 0) {
+    return [];
+  }
+  const choices = conflicts.map(filePath => ({
+    name: filePath,
+    value: filePath,
+    checked: false,
+  }));
+  const selected = await checkbox({
+    message: 'These files already exist. Select files to overwrite (enter to skip all)',
+    choices,
+  });
+  return selected as string[];
+}
