@@ -9,7 +9,7 @@ const program = new Command();
 program
   .name('headchef')
   .description('Scaffold AI IDE configs for 10 code editors')
-  .version('0.3.0');
+  .version('0.4.0');
 
 const initCommand = new Command('init')
   .description('Scaffold AI IDE configs into the current directory')

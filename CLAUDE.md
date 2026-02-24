@@ -26,6 +26,7 @@ CLI tool that scaffolds AI IDE configuration files for 10 code editors (Claude C
 - `src/prompt.ts` - Interactive IDE/framework selection prompts
 - `src/detector.ts` - Detects existing IDE config files
 - `src/generator.ts` - Orchestrates recipe execution and file writing
+- `src/rc.ts` - RC file (~/.headchefrc) for remembering IDE/framework selections
 - `src/recipes/` - One Recipe per IDE (10 total)
 - `src/templates/` - Template content as template literal functions
 - `src/templates/agents/` - 5 shared agent templates
@@ -38,3 +39,9 @@ CLI tool that scaffolds AI IDE configuration files for 10 code editors (Claude C
 - Verb-first function names
 - < 20 lines per function
 - Arrange-Act-Assert for tests
+
+## Key Features (v0.4)
+- Interactive overwrite prompt: when collisions are detected, shows a checkbox list of conflicting files to selectively overwrite (all unchecked by default)
+- RC file (~/.headchefrc): saves IDE and framework selections between runs for faster repeat usage
+- Cleaned up generated file sets: removed settings.json/.mcp.json from Claude, mcp.json from Cursor, rules/workflows from Antigravity
+- Codex now uses config.toml instead of instructions.md

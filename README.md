@@ -184,20 +184,18 @@ Framework layers add technology-specific rules on top of the base coding standar
 
 ```
 CLAUDE.md
-.claude/settings.json
 .claude/agents/code-reviewer.md
 .claude/agents/test-writer.md
 .claude/agents/bug-debugger.md
 .claude/agents/architecture-planner.md
 .claude/agents/docs-keeper.md
 .claude/commands/review.md
-.mcp.json
 ```
 
 ### OpenAI Codex
 
 ```
-.codex/instructions.md
+.codex/config.toml
 ```
 
 ### Cursor
@@ -205,7 +203,6 @@ CLAUDE.md
 ```
 .cursor/rules/general.mdc
 .cursor/rules/{framework}.mdc      # when framework != general
-.cursor/mcp.json
 .cursorignore
 .cursorindexingignore
 ```
@@ -222,13 +219,11 @@ CLAUDE.md
 
 ```
 GEMINI.md
-.agent/rules/coding-style.md
 .agent/skills/code-reviewer/SKILL.md
 .agent/skills/test-writer/SKILL.md
 .agent/skills/bug-debugger/SKILL.md
 .agent/skills/architecture-planner/SKILL.md
 .agent/skills/docs-keeper/SKILL.md
-.agent/workflows/review.md
 ```
 
 ### GitHub Copilot
@@ -299,6 +294,24 @@ Use --force to overwrite existing files.
 
 Use `--force` to overwrite all existing config files.
 
+In interactive mode, headchef shows a checkbox list of conflicting files so you can choose which ones to overwrite (all unchecked by default).
+
+## Preferences (~/.headchefrc)
+
+headchef remembers your IDE and framework selections in `~/.headchefrc`. On your next run, the interactive prompt pre-selects your previous choices instead of all IDEs.
+
+```json
+{
+  "ides": ["claude", "cursor", "windsurf", "antigravity"],
+  "framework": "flutter"
+}
+```
+
+- Saved automatically after each interactive session
+- First run (no RC file): all IDEs pre-selected
+- `--no-interactive` ignores the RC file
+- Delete `~/.headchefrc` to reset to defaults
+
 ## What's Inside the Rules?
 
 The generated rules enforce opinionated coding standards:
@@ -318,7 +331,7 @@ The generated rules enforce opinionated coding standards:
 - **@inquirer/prompts** for interactive checkbox/select UI
 - **chalk** for terminal colors
 - **fs-extra** for file operations
-- **vitest** for testing (243 tests)
+- **vitest** for testing (241 tests)
 - **tsup** for bundling
 
 ## Development

@@ -1,6 +1,6 @@
 {
   "name": "headchef",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Scaffold AI IDE configs for 10 code editors — Claude, Codex, Cursor, Windsurf, Antigravity, Copilot, Cline, JetBrains, Augment, and AGENTS.md",
   "type": "module",
   "bin": {
