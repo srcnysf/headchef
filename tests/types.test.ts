@@ -6,18 +6,14 @@ describe('types', () => {
   describe('isValidIdeType', () => {
     it('should return true for valid IDE types', () => {
       expect(isValidIdeType('claude')).toBe(true);
+      expect(isValidIdeType('codex')).toBe(true);
       expect(isValidIdeType('cursor')).toBe(true);
       expect(isValidIdeType('windsurf')).toBe(true);
       expect(isValidIdeType('antigravity')).toBe(true);
       expect(isValidIdeType('copilot')).toBe(true);
       expect(isValidIdeType('cline')).toBe(true);
-      expect(isValidIdeType('continuedev')).toBe(true);
-      expect(isValidIdeType('amazonq')).toBe(true);
       expect(isValidIdeType('jetbrains')).toBe(true);
-      expect(isValidIdeType('aider')).toBe(true);
-      expect(isValidIdeType('trae')).toBe(true);
       expect(isValidIdeType('augment')).toBe(true);
-      expect(isValidIdeType('codex')).toBe(true);
       expect(isValidIdeType('agentsmd')).toBe(true);
     });
     it('should return false for invalid IDE types', () => {
@@ -38,14 +34,12 @@ describe('types', () => {
     });
   });
   describe('constants', () => {
-    it('should export IDE_TYPES array with 14 entries', () => {
+    it('should export IDE_TYPES array with 10 entries', () => {
       expect(IDE_TYPES).toEqual([
-        'claude', 'cursor', 'windsurf', 'antigravity',
-        'copilot', 'cline', 'continuedev', 'amazonq',
-        'jetbrains', 'aider', 'trae', 'augment',
-        'codex', 'agentsmd'
+        'claude', 'codex', 'cursor', 'windsurf', 'antigravity',
+        'copilot', 'cline', 'jetbrains', 'augment', 'agentsmd'
       ]);
-      expect(IDE_TYPES).toHaveLength(14);
+      expect(IDE_TYPES).toHaveLength(10);
     });
     it('should export FRAMEWORKS array', () => {
       expect(FRAMEWORKS).toEqual(['general', 'flutter', 'nextjs', 'react', 'python']);
@@ -71,9 +65,9 @@ describe('types', () => {
       expect(IDE_METADATA.antigravity.description).toContain('GEMINI.md');
       expect(IDE_METADATA.copilot.description).toContain('copilot-instructions.md');
     });
-    it('should cover all 14 IDE types', () => {
+    it('should cover all 10 IDE types', () => {
       const metadataKeys = Object.keys(IDE_METADATA) as IdeType[];
-      expect(metadataKeys).toHaveLength(14);
+      expect(metadataKeys).toHaveLength(10);
     });
   });
 });

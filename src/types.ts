@@ -1,8 +1,6 @@
 export const IDE_TYPES = [
-  'claude', 'cursor', 'windsurf', 'antigravity',
-  'copilot', 'cline', 'continuedev', 'amazonq',
-  'jetbrains', 'aider', 'trae', 'augment',
-  'codex', 'agentsmd'
+  'claude', 'codex', 'cursor', 'windsurf', 'antigravity',
+  'copilot', 'cline', 'jetbrains', 'augment', 'agentsmd'
 ] as const;
 export type IdeType = typeof IDE_TYPES[number];
 
@@ -13,18 +11,14 @@ export interface IdeMetadata {
 
 export const IDE_METADATA: Record<IdeType, IdeMetadata> = {
   claude: { displayName: 'Claude Code', description: '.claude/, CLAUDE.md' },
+  codex: { displayName: 'OpenAI Codex', description: '.codex/' },
   cursor: { displayName: 'Cursor', description: '.cursor/rules/' },
   windsurf: { displayName: 'Windsurf', description: '.windsurf/rules/' },
   antigravity: { displayName: 'Google Antigravity', description: '.agent/, GEMINI.md' },
   copilot: { displayName: 'GitHub Copilot', description: '.github/copilot-instructions.md' },
   cline: { displayName: 'Cline / Roo Code', description: '.clinerules, .roo/rules/' },
-  continuedev: { displayName: 'Continue.dev', description: '.continue/rules/' },
-  amazonq: { displayName: 'Amazon Q Developer', description: '.amazonq/rules/' },
   jetbrains: { displayName: 'JetBrains AI', description: '.aiassistant/rules/' },
-  aider: { displayName: 'Aider', description: '.aider.conf.yml, CONVENTIONS.md' },
-  trae: { displayName: 'Trae', description: '.trae/rules/' },
   augment: { displayName: 'Augment Code', description: '.augment/rules/' },
-  codex: { displayName: 'OpenAI Codex', description: '.codex/' },
   agentsmd: { displayName: 'AGENTS.md', description: 'Universal standard' },
 };
 
