@@ -14,7 +14,7 @@ export const IDE_METADATA: Record<IdeType, IdeMetadata> = {
   codex: { displayName: 'OpenAI Codex', description: '.codex/' },
   cursor: { displayName: 'Cursor', description: '.cursor/rules/' },
   windsurf: { displayName: 'Windsurf', description: '.windsurf/rules/' },
-  antigravity: { displayName: 'Google Antigravity', description: '.agent/, GEMINI.md' },
+  antigravity: { displayName: 'Google Antigravity', description: 'GEMINI.md, .agent/skills/' },
   copilot: { displayName: 'GitHub Copilot', description: '.github/copilot-instructions.md' },
   cline: { displayName: 'Cline / Roo Code', description: '.clinerules, .roo/rules/' },
   jetbrains: { displayName: 'JetBrains AI', description: '.aiassistant/rules/' },

@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest';
 import { generateGeminiMd } from '../../../src/templates/antigravity/gemini_md.js';
-import { generateCodingStyleRules } from '../../../src/templates/antigravity/rules.js';
 import {
   generateCodeReviewerSkill,
   generateTestWriterSkill,
@@ -8,7 +7,6 @@ import {
   generateArchitecturePlannerSkill,
   generateDocsKeeperSkill,
 } from '../../../src/templates/antigravity/skills.js';
-import { generateReviewWorkflow } from '../../../src/templates/antigravity/workflows.js';
 
 describe('antigravity templates', () => {
   describe('generateGeminiMd', () => {
@@ -24,15 +22,10 @@ describe('antigravity templates', () => {
       const result = generateGeminiMd('general');
       expect(result).toContain('SOLID');
     });
-  });
-  describe('generateCodingStyleRules', () => {
-    it('should contain coding style heading', () => {
-      const result = generateCodingStyleRules();
-      expect(result).toContain('Coding Style');
-    });
-    it('should contain naming conventions', () => {
-      const result = generateCodingStyleRules();
+    it('should contain coding style content', () => {
+      const result = generateGeminiMd('general');
       expect(result).toContain('Naming Conventions');
+      expect(result).toContain('Function Guidelines');
     });
   });
   describe('generateCodeReviewerSkill', () => {
@@ -113,17 +106,6 @@ describe('antigravity templates', () => {
       const result = generateDocsKeeperSkill();
       expect(result).toContain('API Documentation');
       expect(result).toContain('Architecture Decision Records');
-    });
-  });
-  describe('generateReviewWorkflow', () => {
-    it('should contain review-related content', () => {
-      const result = generateReviewWorkflow();
-      expect(result.toLowerCase()).toContain('review');
-    });
-    it('should contain workflow steps', () => {
-      const result = generateReviewWorkflow();
-      expect(result).toContain('npm test');
-      expect(result).toContain('git diff');
     });
   });
 });

@@ -24,13 +24,13 @@ describe('AntigravityRecipe', () => {
     const files = recipe.generateFiles(createOptions());
     const paths = files.map(f => f.path);
     expect(paths).toContain('GEMINI.md');
-    expect(paths).toContain('.agent/rules/coding-style.md');
     expect(paths).toContain('.agent/skills/code-reviewer/SKILL.md');
     expect(paths).toContain('.agent/skills/test-writer/SKILL.md');
     expect(paths).toContain('.agent/skills/bug-debugger/SKILL.md');
     expect(paths).toContain('.agent/skills/architecture-planner/SKILL.md');
     expect(paths).toContain('.agent/skills/docs-keeper/SKILL.md');
-    expect(paths).toContain('.agent/workflows/review.md');
+    expect(paths).not.toContain('.agent/rules/coding-style.md');
+    expect(paths).not.toContain('.agent/workflows/review.md');
   });
 
   it('should not generate pr-reviewer skill', () => {
@@ -53,9 +53,17 @@ describe('AntigravityRecipe', () => {
     expect(geminiMd!.content).toContain('Flutter');
   });
 
-  it('should generate 8 files total', () => {
+  it('should include coding style in GEMINI.md', () => {
     const files = recipe.generateFiles(createOptions());
-    expect(files).toHaveLength(8);
+    const geminiMd = files.find(f => f.path === 'GEMINI.md');
+    expect(geminiMd).toBeDefined();
+    expect(geminiMd!.content).toContain('Naming Conventions');
+    expect(geminiMd!.content).toContain('Function Guidelines');
+  });
+
+  it('should generate 6 files total', () => {
+    const files = recipe.generateFiles(createOptions());
+    expect(files).toHaveLength(6);
   });
 
   it('should generate same file count regardless of framework', () => {
