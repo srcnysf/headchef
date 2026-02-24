@@ -1,8 +1,9 @@
 import chalk from 'chalk';
 import type { Command } from 'commander';
-import { generateConfigs } from '../generator.js';
+import { planGeneration, writeFiles } from '../generator.js';
 import { IDE_TYPES, IDE_METADATA, FRAMEWORKS, isValidIdeType, isValidFramework } from '../types.js';
-import { promptIdeSelection, promptFrameworkSelection } from '../prompt.js';
+import { promptIdeSelection, promptFrameworkSelection, promptOverwriteSelection } from '../prompt.js';
+import { loadRcConfig, saveRcConfig } from '../rc.js';
 import type { IdeType, Framework, GeneratorResult } from '../types.js';
 
 interface SharedCommandOptions {
@@ -74,24 +75,32 @@ export async function executeGeneration(context: ExecutionContext): Promise<void
   let framework: Framework;
   if (isInteractive) {
     console.log(chalk.bold('\n🍳 headchef — Cooking up your AI IDE configs...\n'));
-    ides = await promptIdeSelection();
+    const rcConfig = await loadRcConfig();
+    ides = await promptIdeSelection(rcConfig?.ides);
     if (ides.length === 0) {
       console.log(chalk.yellow('No IDEs selected. Nothing to do.\n'));
       return;
     }
     framework = hasFrameworkFlag ? resolveFramework(options.framework!) : await promptFrameworkSelection();
+    await saveRcConfig({ ides, framework });
   } else {
     ides = resolveIdes(options.only, options.exclude);
     framework = resolveFramework(options.framework || 'general');
     console.log(chalk.bold('\n🍳 headchef — Cooking up your AI IDE configs...\n'));
   }
-  const result = await generateConfigs({
+  const generatorOptions = {
     targetDir,
     ides,
     framework,
     force: options.force,
     dryRun: options.dryRun,
-  });
+  };
+  const plan = await planGeneration(generatorOptions);
+  let approvedOverwrites: string[] = [];
+  if (plan.conflicts.length > 0 && isInteractive && !options.force) {
+    approvedOverwrites = await promptOverwriteSelection(plan.conflicts);
+  }
+  const result = await writeFiles(generatorOptions, plan, approvedOverwrites);
   printResult(result, options.dryRun);
 }
 

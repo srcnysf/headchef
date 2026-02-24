@@ -2,11 +2,12 @@ import { checkbox, select } from '@inquirer/prompts';
 import { IDE_TYPES, IDE_METADATA, FRAMEWORKS } from './types.js';
 import type { IdeType, Framework } from './types.js';
 
-export async function promptIdeSelection(): Promise<IdeType[]> {
+export async function promptIdeSelection(preSelected?: readonly IdeType[]): Promise<IdeType[]> {
+  const preSelectedSet = preSelected ? new Set(preSelected) : null;
   const choices = IDE_TYPES.map(ide => ({
     name: `${IDE_METADATA[ide].displayName.padEnd(22)} (${IDE_METADATA[ide].description})`,
     value: ide,
-    checked: true,
+    checked: preSelectedSet ? preSelectedSet.has(ide) : true,
   }));
   const selected = await checkbox({
     message: 'Select AI IDEs to configure (space to toggle, enter to confirm)',
