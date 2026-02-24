@@ -24,20 +24,25 @@ describe('ClaudeRecipe', () => {
     const files = recipe.generateFiles(createOptions());
     const paths = files.map(f => f.path);
     expect(paths).toContain('CLAUDE.md');
-    expect(paths).toContain('.claude/settings.json');
     expect(paths).toContain('.claude/agents/code-reviewer.md');
     expect(paths).toContain('.claude/agents/test-writer.md');
     expect(paths).toContain('.claude/agents/bug-debugger.md');
     expect(paths).toContain('.claude/agents/architecture-planner.md');
     expect(paths).toContain('.claude/agents/docs-keeper.md');
     expect(paths).toContain('.claude/commands/review.md');
-    expect(paths).toContain('.mcp.json');
   });
 
   it('should not generate pr-reviewer agent', () => {
     const files = recipe.generateFiles(createOptions());
     const paths = files.map(f => f.path);
     expect(paths).not.toContain('.claude/agents/pr-reviewer.md');
+  });
+
+  it('should not generate settings.json or .mcp.json', () => {
+    const files = recipe.generateFiles(createOptions());
+    const paths = files.map(f => f.path);
+    expect(paths).not.toContain('.claude/settings.json');
+    expect(paths).not.toContain('.mcp.json');
   });
 
   it('should generate files with non-empty content', () => {
@@ -54,8 +59,8 @@ describe('ClaudeRecipe', () => {
     expect(claudeMd!.content).toContain('Flutter');
   });
 
-  it('should generate 9 files total', () => {
+  it('should generate 7 files total', () => {
     const files = recipe.generateFiles(createOptions());
-    expect(files).toHaveLength(9);
+    expect(files).toHaveLength(7);
   });
 });

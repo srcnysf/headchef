@@ -24,7 +24,6 @@ describe('CursorRecipe', () => {
     const files = recipe.generateFiles(createOptions());
     const paths = files.map(f => f.path);
     expect(paths).toContain('.cursor/rules/general.mdc');
-    expect(paths).toContain('.cursor/mcp.json');
     expect(paths).toContain('.cursorignore');
     expect(paths).toContain('.cursorindexingignore');
   });
