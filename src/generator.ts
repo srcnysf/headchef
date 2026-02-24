@@ -1,6 +1,6 @@
 import fs from 'fs-extra';
 import path from 'path';
-import type { GeneratorOptions, GeneratorResult, Recipe, FileEntry } from './types.js';
+import type { GeneratorOptions, GeneratorResult, GenerationPlan, Recipe, FileEntry } from './types.js';
 import { ClaudeRecipe } from './recipes/claude.recipe.js';
 import { CodexRecipe } from './recipes/codex.recipe.js';
 import { CursorRecipe } from './recipes/cursor.recipe.js';
@@ -29,19 +29,29 @@ function createRecipes(): readonly Recipe[] {
   ];
 }
 
-export async function generateConfigs(options: GeneratorOptions): Promise<GeneratorResult> {
+export async function planGeneration(options: GeneratorOptions): Promise<GenerationPlan> {
   const recipes = createRecipes().filter(r => options.ides.includes(r.name));
   const allFiles: FileEntry[] = [];
   for (const recipe of recipes) {
     allFiles.push(...recipe.generateFiles(options));
   }
   allFiles.push({ path: '.gitignore.headchef', content: getGitignoreAdditions() });
-  const allPaths = allFiles.map(f => f.path);
-  const existingPaths = options.force ? [] : await detectExistingFiles(options.targetDir, allPaths);
+  const conflicts = options.force ? [] : await detectExistingFiles(options.targetDir, allFiles.map(f => f.path));
+  return { filesToWrite: allFiles, conflicts };
+}
+
+export async function writeFiles(
+  options: GeneratorOptions,
+  plan: GenerationPlan,
+  approvedOverwrites: readonly string[] = [],
+): Promise<GeneratorResult> {
+  const overwriteSet = new Set(approvedOverwrites);
   const generated: string[] = [];
-  const skipped: string[] = [...existingPaths];
-  for (const file of allFiles) {
-    if (existingPaths.includes(file.path)) {
+  const skipped: string[] = [];
+  for (const file of plan.filesToWrite) {
+    const isConflict = plan.conflicts.includes(file.path);
+    if (isConflict && !overwriteSet.has(file.path)) {
+      skipped.push(file.path);
       continue;
     }
     generated.push(file.path);
@@ -52,4 +62,9 @@ export async function generateConfigs(options: GeneratorOptions): Promise<Genera
     }
   }
   return { generated, skipped };
+}
+
+export async function generateConfigs(options: GeneratorOptions): Promise<GeneratorResult> {
+  const plan = await planGeneration(options);
+  return writeFiles(options, plan);
 }
