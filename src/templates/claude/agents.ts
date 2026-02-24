@@ -1,90 +1,56 @@
-export function generatePrReviewerAgent(): string {
+import { getCodeReviewerContent } from '../agents/code_reviewer.js';
+import { getTestWriterContent } from '../agents/test_writer.js';
+import { getBugDebuggerContent } from '../agents/bug_debugger.js';
+import { getArchitecturePlannerContent } from '../agents/architecture_planner.js';
+import { getDocsKeeperContent } from '../agents/docs_keeper.js';
+
+function wrapClaudeAgent(name: string, description: string, content: string): string {
   return `---
-name: pr-reviewer
-description: Use this agent for comprehensive pull request reviews. Analyzes code quality, pattern consistency, architecture adherence, and potential bugs.
+name: ${name}
+description: ${description}
 model: inherit
 ---
 
-You are an expert code reviewer. Your mission is to perform thorough pull request reviews.
-
-## Review Process
-
-### 1. Change Analysis
-- Examine all changes in the PR
-- Identify scope and purpose
-- Map affected files and relationships
-
-### 2. Pattern Consistency
-- Compare new code against existing patterns
-- Flag deviations from established conventions
-- Verify architectural consistency
-
-### 3. Code Quality
-- Single Responsibility adherence
-- DRY compliance
-- Meaningful naming
-- Small focused functions
-- Proper error handling
-
-### 4. Bug Detection
-- Null safety issues
-- Race conditions
-- Resource leaks
-- Logic errors
-- Edge cases
-
-### 5. Test Coverage
-- Verify tests exist for new functionality
-- Check test quality (AAA pattern)
-- Ensure edge cases are covered
-
-## Output Format
-
-### Summary
-Brief overview + assessment (Approve/Request Changes/Comment)
-
-### Critical Issues
-Bugs, security vulnerabilities, breaking changes
-
-### Major Concerns
-Pattern deviations, missing tests, performance issues
-
-### Minor Suggestions
-Style improvements, refactoring opportunities
-
-### Positive Observations
-What was done well
+${content}
 `;
 }
 
 export function generateCodeReviewerAgent(): string {
-  return `---
-name: code-reviewer
-description: Use this agent for focused code quality reviews. Checks clean code principles, SOLID adherence, and security best practices.
-model: inherit
----
+  return wrapClaudeAgent(
+    'code-reviewer',
+    'Use this agent for code quality reviews. Checks clean code principles, SOLID adherence, security best practices, and type safety.',
+    getCodeReviewerContent()
+  );
+}
 
-You are a code quality specialist focused on clean code and SOLID principles.
+export function generateTestWriterAgent(): string {
+  return wrapClaudeAgent(
+    'test-writer',
+    'Use this agent for writing comprehensive tests. Follows Arrange-Act-Assert, covers edge cases, and uses proper test doubles.',
+    getTestWriterContent()
+  );
+}
 
-## Review Checklist
+export function generateBugDebuggerAgent(): string {
+  return wrapClaudeAgent(
+    'bug-debugger',
+    'Use this agent for systematic debugging. Reproduces, isolates, identifies root cause, proposes fix, and verifies resolution.',
+    getBugDebuggerContent()
+  );
+}
 
-- [ ] Functions are small and focused (< 20 lines)
-- [ ] Naming is clear and follows conventions
-- [ ] SOLID principles are followed
-- [ ] Error handling is appropriate
-- [ ] No hardcoded secrets or magic numbers
-- [ ] Types are properly declared
-- [ ] Data is immutable where possible
-- [ ] Tests follow Arrange-Act-Assert
-- [ ] No code duplication (DRY)
-- [ ] Security best practices followed
+export function generateArchitecturePlannerAgent(): string {
+  return wrapClaudeAgent(
+    'architecture-planner',
+    'Use this agent for architecture design. Explores approaches, evaluates trade-offs, and proposes scalable designs using proven patterns.',
+    getArchitecturePlannerContent()
+  );
+}
 
-## Report Format
-
-For each issue found, provide:
-1. File path and line number
-2. What the issue is
-3. Why it matters
-4. Suggested fix
-`;
+export function generateDocsKeeperAgent(): string {
+  return wrapClaudeAgent(
+    'docs-keeper',
+    'Use this agent for documentation management. Creates, updates, and maintains project documentation including APIs, guides, and ADRs.',
+    getDocsKeeperContent()
+  );
 }

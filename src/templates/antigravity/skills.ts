@@ -1,44 +1,58 @@
-export function generatePrReviewerSkill(): string {
+import { getCodeReviewerContent } from '../agents/code_reviewer.js';
+import { getTestWriterContent } from '../agents/test_writer.js';
+import { getBugDebuggerContent } from '../agents/bug_debugger.js';
+import { getArchitecturePlannerContent } from '../agents/architecture_planner.js';
+import { getDocsKeeperContent } from '../agents/docs_keeper.js';
+
+function wrapAntigravitySkill(name: string, description: string, content: string): string {
+  const title = name.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
   return `---
-name: pr-reviewer
-description: Use when reviewing pull requests. Performs comprehensive code review including pattern consistency, architecture adherence, and bug detection.
+name: ${name}
+description: ${description}
 ---
 
-# PR Review Skill
+# ${title} Skill
 
-## Instructions
-1. Analyze all changes in the current PR
-2. Check pattern consistency with existing codebase
-3. Review code quality (SOLID, DRY, clean code)
-4. Detect potential bugs and security issues
-5. Verify test coverage
-
-## Output
-Provide structured review with Critical/Major/Minor categories.
+${content}
 `;
 }
 
 export function generateCodeReviewerSkill(): string {
-  return `---
-name: code-reviewer
-description: Use when reviewing code quality. Checks clean code principles, SOLID adherence, and best practices.
----
+  return wrapAntigravitySkill(
+    'code-reviewer',
+    'Use when reviewing code quality. Checks clean code principles, SOLID adherence, security best practices, and type safety.',
+    getCodeReviewerContent()
+  );
+}
 
-# Code Review Skill
+export function generateTestWriterSkill(): string {
+  return wrapAntigravitySkill(
+    'test-writer',
+    'Use when writing comprehensive tests. Follows Arrange-Act-Assert, covers edge cases, and uses proper test doubles.',
+    getTestWriterContent()
+  );
+}
 
-## Instructions
-1. Check function size (< 20 lines)
-2. Verify naming conventions
-3. Validate SOLID principles
-4. Review error handling
-5. Check for security issues
+export function generateBugDebuggerSkill(): string {
+  return wrapAntigravitySkill(
+    'bug-debugger',
+    'Use when debugging issues. Reproduces, isolates, identifies root cause, proposes fix, and verifies resolution.',
+    getBugDebuggerContent()
+  );
+}
 
-## Checklist
-- [ ] Functions small and focused
-- [ ] Clear naming conventions
-- [ ] SOLID principles followed
-- [ ] Proper error handling
-- [ ] No hardcoded secrets
-- [ ] Types properly declared
-`;
+export function generateArchitecturePlannerSkill(): string {
+  return wrapAntigravitySkill(
+    'architecture-planner',
+    'Use when designing system architecture. Explores approaches, evaluates trade-offs, and proposes scalable designs.',
+    getArchitecturePlannerContent()
+  );
+}
+
+export function generateDocsKeeperSkill(): string {
+  return wrapAntigravitySkill(
+    'docs-keeper',
+    'Use when managing documentation. Creates, updates, and maintains project documentation including APIs, guides, and ADRs.',
+    getDocsKeeperContent()
+  );
 }
