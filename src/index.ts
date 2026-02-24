@@ -1,30 +1,47 @@
 import { Command } from 'commander';
 import chalk from 'chalk';
 import { generateConfigs } from './generator.js';
-import { IDE_TYPES, FRAMEWORKS, isValidIdeType, isValidFramework } from './types.js';
+import { IDE_TYPES, IDE_METADATA, FRAMEWORKS, isValidIdeType, isValidFramework } from './types.js';
+import { promptIdeSelection, promptFrameworkSelection } from './prompt.js';
 import type { IdeType, Framework } from './types.js';
 
 const program = new Command();
 
 program
   .name('create-headchef')
-  .description('Scaffold AI IDE configs for Claude Code, Cursor, Windsurf, and Antigravity')
-  .version('0.1.0')
+  .description('Scaffold AI IDE configs for Claude Code, Cursor, Windsurf, and more')
+  .version('0.2.0')
   .option('--only <ides...>', 'Only generate configs for specified IDEs')
   .option('--exclude <ides...>', 'Exclude specified IDEs')
-  .option('--framework <framework>', 'Framework-specific rules layer', 'general')
+  .option('--framework <framework>', 'Framework-specific rules layer')
   .option('--force', 'Overwrite existing config files', false)
   .option('--dry-run', 'Preview files without writing', false)
   .option('--list', 'List available IDEs and frameworks')
+  .option('--no-interactive', 'Skip interactive prompts (use all IDEs)')
   .option('--target <dir>', 'Target directory', process.cwd())
   .action(async (options) => {
     if (options.list) {
       printList();
       return;
     }
-    const ides = resolveIdes(options.only, options.exclude);
-    const framework = resolveFramework(options.framework);
-    console.log(chalk.bold('\n🍸 headchef - Mixing your AI IDE configs...\n'));
+    const hasIdeFlags = options.only || options.exclude;
+    const hasFrameworkFlag = options.framework;
+    const isInteractive = options.interactive !== false && !hasIdeFlags;
+    let ides: IdeType[];
+    let framework: Framework;
+    if (isInteractive) {
+      console.log(chalk.bold('\n🍸 headchef - Mixing your AI IDE configs...\n'));
+      ides = await promptIdeSelection();
+      if (ides.length === 0) {
+        console.log(chalk.yellow('No IDEs selected. Nothing to do.\n'));
+        return;
+      }
+      framework = hasFrameworkFlag ? resolveFramework(options.framework) : await promptFrameworkSelection();
+    } else {
+      ides = resolveIdes(options.only, options.exclude);
+      framework = resolveFramework(options.framework || 'general');
+      console.log(chalk.bold('\n🍸 headchef - Mixing your AI IDE configs...\n'));
+    }
     const result = await generateConfigs({
       targetDir: options.target,
       ides,
@@ -63,7 +80,8 @@ function resolveFramework(value: string): Framework {
 function printList(): void {
   console.log(chalk.bold('\nAvailable IDEs:'));
   for (const ide of IDE_TYPES) {
-    console.log(`  - ${ide}`);
+    const meta = IDE_METADATA[ide];
+    console.log(`  - ${meta.displayName.padEnd(22)} (${ide})`);
   }
   console.log(chalk.bold('\nAvailable Frameworks:'));
   for (const fw of FRAMEWORKS) {
