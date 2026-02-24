@@ -25,10 +25,19 @@ describe('ClaudeRecipe', () => {
     const paths = files.map(f => f.path);
     expect(paths).toContain('CLAUDE.md');
     expect(paths).toContain('.claude/settings.json');
-    expect(paths).toContain('.claude/agents/pr-reviewer.md');
     expect(paths).toContain('.claude/agents/code-reviewer.md');
+    expect(paths).toContain('.claude/agents/test-writer.md');
+    expect(paths).toContain('.claude/agents/bug-debugger.md');
+    expect(paths).toContain('.claude/agents/architecture-planner.md');
+    expect(paths).toContain('.claude/agents/docs-keeper.md');
     expect(paths).toContain('.claude/commands/review.md');
     expect(paths).toContain('.mcp.json');
+  });
+
+  it('should not generate pr-reviewer agent', () => {
+    const files = recipe.generateFiles(createOptions());
+    const paths = files.map(f => f.path);
+    expect(paths).not.toContain('.claude/agents/pr-reviewer.md');
   });
 
   it('should generate files with non-empty content', () => {
@@ -43,5 +52,10 @@ describe('ClaudeRecipe', () => {
     const claudeMd = files.find(f => f.path === 'CLAUDE.md');
     expect(claudeMd).toBeDefined();
     expect(claudeMd!.content).toContain('Flutter');
+  });
+
+  it('should generate 9 files total', () => {
+    const files = recipe.generateFiles(createOptions());
+    expect(files).toHaveLength(9);
   });
 });
