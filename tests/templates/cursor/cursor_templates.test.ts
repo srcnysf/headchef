@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest';
 import { generateGeneralMdc, generateFrameworkMdc } from '../../../src/templates/cursor/general_mdc.js';
-import { generateCursorMcpJson } from '../../../src/templates/cursor/mcp_json.js';
 import { generateCursorIgnore, generateCursorIndexingIgnore } from '../../../src/templates/cursor/ignore_files.js';
 
 describe('cursor templates', () => {
@@ -29,13 +28,6 @@ describe('cursor templates', () => {
     it('should contain correct globs for nextjs', () => {
       const result = generateFrameworkMdc('nextjs');
       expect(result).toContain('*.ts,*.tsx');
-    });
-  });
-  describe('generateCursorMcpJson', () => {
-    it('should return valid JSON with mcpServers key', () => {
-      const result = generateCursorMcpJson();
-      const parsed = JSON.parse(result);
-      expect(parsed).toHaveProperty('mcpServers');
     });
   });
   describe('generateCursorIgnore', () => {

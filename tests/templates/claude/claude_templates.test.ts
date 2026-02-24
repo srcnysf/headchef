@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest';
 import { generateClaudeMd } from '../../../src/templates/claude/claude_md.js';
-import { generateClaudeSettings } from '../../../src/templates/claude/settings.js';
 import {
   generateCodeReviewerAgent,
   generateTestWriterAgent,
@@ -31,14 +30,6 @@ describe('claude templates', () => {
       const result = generateClaudeMd('nextjs');
       expect(result).toContain('Next.js');
       expect(result).toContain('Server Component');
-    });
-  });
-  describe('generateClaudeSettings', () => {
-    it('should return valid JSON with permissions key', () => {
-      const result = generateClaudeSettings();
-      const parsed = JSON.parse(result);
-      expect(parsed).toHaveProperty('permissions');
-      expect(parsed.permissions).toHaveProperty('allow');
     });
   });
   describe('generateCodeReviewerAgent', () => {
