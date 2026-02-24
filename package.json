@@ -1,6 +1,6 @@
 {
   "name": "create-headchef",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Scaffold AI IDE configs for Claude Code, Cursor, Windsurf, and Google Antigravity",
   "type": "module",
   "bin": {
