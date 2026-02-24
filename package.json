@@ -1,0 +1,48 @@
+{
+  "name": "create-headchef",
+  "version": "0.1.0",
+  "description": "Scaffold AI IDE configs for Claude Code, Cursor, Windsurf, and Google Antigravity",
+  "type": "module",
+  "bin": {
+    "create-headchef": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "cli",
+    "ai",
+    "ide",
+    "claude",
+    "cursor",
+    "windsurf",
+    "antigravity",
+    "scaffold",
+    "headchef"
+  ],
+  "author": "Eventually Solutions",
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "chalk": "^5.6.2",
+    "commander": "^14.0.3",
+    "fs-extra": "^11.3.3"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^25.3.0",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
+  }
+}
