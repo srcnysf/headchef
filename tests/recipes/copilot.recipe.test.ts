@@ -9,6 +9,7 @@ function createOptions(overrides: Partial<GeneratorOptions> = {}): GeneratorOpti
     framework: 'general',
     force: false,
     dryRun: false,
+    agentCategories: ['core'],
     ...overrides,
   };
 }

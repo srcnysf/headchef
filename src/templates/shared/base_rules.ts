@@ -85,45 +85,20 @@ export function getBaseRules(): string {
 
 ## SOLID Principles
 
-### Single Responsibility Principle (S)
-
-Each class or function should have only one reason to change. Separate concerns into different modules.
-
-### Open/Closed Principle (O)
-
-Software entities should be open for extension but closed for modification. Use abstractions and interfaces.
-
-### Liskov Substitution Principle (L)
-
-Objects of a superclass should be replaceable with objects of subclasses without breaking the application.
-
-### Interface Segregation Principle (I)
-
-Many client-specific interfaces are better than one general-purpose interface. Don't force implementations to depend on methods they don't use.
-
-### Dependency Inversion Principle (D)
-
-Depend on abstractions, not concretions. High-level modules should not depend on low-level modules.
+- **S**: Single Responsibility - each class or function should have only one reason to change.
+- **O**: Open/Closed - open for extension, closed for modification. Use abstractions and interfaces.
+- **L**: Liskov Substitution - subclasses must be substitutable for their base classes.
+- **I**: Interface Segregation - prefer specific interfaces over general ones.
+- **D**: Dependency Inversion - depend on abstractions, not concretions.
 
 ## Design Patterns
 
-### Repository Pattern
+- **Repository** - Abstract data access behind interfaces for retrieval and persistence.
+- **Factory** - Create objects without exposing creation logic when construction is complex.
+- **Strategy** - Define a family of algorithms, encapsulate each, make them interchangeable.
+- **Observer** - One-to-many dependency so dependents are notified on state changes.
 
-Abstract data access logic behind interfaces. Repositories handle data retrieval and persistence.
-
-### Factory Pattern
-
-Create objects without exposing creation logic. Use factories when object creation is complex.
-
-### Strategy Pattern
-
-Define a family of algorithms, encapsulate each one, and make them interchangeable.
-
-### Observer Pattern
-
-Define a one-to-many dependency between objects so that when one object changes state, all its dependents are notified.
-
-## Security Principles
+## Security
 
 - Never hardcode secrets or API keys.
 - Use environment variables for configuration.
@@ -132,5 +107,11 @@ Define a one-to-many dependency between objects so that when one object changes 
 - Use HTTPS for all network requests.
 - Implement proper authentication and authorization.
 - Keep dependencies updated.
+
+## Don'ts
+- Do NOT install new packages without asking
+- Do NOT modify database migrations directly
+- Do NOT commit secrets, API keys, or .env files
+- Do NOT skip tests when making changes
 `;
 }

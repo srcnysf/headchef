@@ -9,6 +9,7 @@ function createOptions(overrides: Partial<GeneratorOptions> = {}): GeneratorOpti
     framework: 'general',
     force: false,
     dryRun: false,
+    agentCategories: ['core'],
     ...overrides,
   };
 }
@@ -29,6 +30,7 @@ describe('AntigravityRecipe', () => {
     expect(paths).toContain('.agent/skills/bug-debugger/SKILL.md');
     expect(paths).toContain('.agent/skills/architecture-planner/SKILL.md');
     expect(paths).toContain('.agent/skills/docs-keeper/SKILL.md');
+    expect(paths).toContain('.agent/skills/headchef-orchestrator/SKILL.md');
     expect(paths).not.toContain('.agent/rules/coding-style.md');
     expect(paths).not.toContain('.agent/workflows/review.md');
   });
@@ -57,13 +59,13 @@ describe('AntigravityRecipe', () => {
     const files = recipe.generateFiles(createOptions());
     const geminiMd = files.find(f => f.path === 'GEMINI.md');
     expect(geminiMd).toBeDefined();
-    expect(geminiMd!.content).toContain('Naming Conventions');
-    expect(geminiMd!.content).toContain('Function Guidelines');
+    expect(geminiMd!.content).toContain('Nomenclature');
+    expect(geminiMd!.content).toContain('Functions');
   });
 
   it('should generate 6 files total', () => {
     const files = recipe.generateFiles(createOptions());
-    expect(files).toHaveLength(6);
+    expect(files).toHaveLength(7);
   });
 
   it('should generate same file count regardless of framework', () => {

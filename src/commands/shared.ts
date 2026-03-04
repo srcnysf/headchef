@@ -1,10 +1,10 @@
 import chalk from 'chalk';
 import type { Command } from 'commander';
 import { planGeneration, writeFiles } from '../generator.js';
-import { IDE_TYPES, IDE_METADATA, FRAMEWORKS, isValidIdeType, isValidFramework } from '../types.js';
-import { promptIdeSelection, promptFrameworkSelection, promptOverwriteSelection } from '../prompt.js';
+import { IDE_TYPES, IDE_METADATA, FRAMEWORKS, AGENT_CATEGORIES, AGENT_CATEGORY_METADATA, isValidIdeType, isValidFramework } from '../types.js';
+import { promptIdeSelection, promptFrameworkSelection, promptOverwriteSelection, promptAgentCategorySelection } from '../prompt.js';
 import { loadRcConfig, saveRcConfig } from '../rc.js';
-import type { IdeType, Framework, GeneratorResult } from '../types.js';
+import type { IdeType, Framework, AgentCategory, GeneratorResult } from '../types.js';
 
 interface SharedCommandOptions {
   readonly only?: string[];
@@ -73,6 +73,7 @@ export async function executeGeneration(context: ExecutionContext): Promise<void
   const isInteractive = options.interactive && !hasIdeFlags;
   let ides: IdeType[];
   let framework: Framework;
+  let agentCategories: AgentCategory[] = ['core'];
   if (isInteractive) {
     console.log(chalk.bold('\n🍳 headchef — Cooking up your AI IDE configs...\n'));
     const rcConfig = await loadRcConfig();
@@ -82,7 +83,8 @@ export async function executeGeneration(context: ExecutionContext): Promise<void
       return;
     }
     framework = hasFrameworkFlag ? resolveFramework(options.framework!) : await promptFrameworkSelection();
-    await saveRcConfig({ ides, framework });
+    agentCategories = await promptAgentCategorySelection(rcConfig?.agentCategories);
+    await saveRcConfig({ ides, framework, agentCategories });
   } else {
     ides = resolveIdes(options.only, options.exclude);
     framework = resolveFramework(options.framework || 'general');
@@ -92,6 +94,7 @@ export async function executeGeneration(context: ExecutionContext): Promise<void
     targetDir,
     ides,
     framework,
+    agentCategories,
     force: options.force,
     dryRun: options.dryRun,
   };
@@ -137,6 +140,11 @@ export function printList(): void {
   console.log(chalk.bold('\nAvailable Frameworks:'));
   for (const fw of FRAMEWORKS) {
     console.log(`  - ${fw}`);
+  }
+  console.log(chalk.bold('\nAvailable Agent Categories:'));
+  for (const cat of AGENT_CATEGORIES) {
+    const meta = AGENT_CATEGORY_METADATA[cat];
+    console.log(`  - ${meta.displayName.padEnd(22)} ${chalk.dim(`${meta.agentCount} agents — ${meta.description}`)}`);
   }
   console.log();
 }

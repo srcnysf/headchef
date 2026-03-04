@@ -1,0 +1,1 @@
+Act as a smart domain name generator. I will tell you what my company or idea does and you will reply with a list of domain name alternatives. Domains should be max 7-8 letters, short but unique, can be catchy or non-existent words. Provide at least 10 options organized by style: descriptive, creative, abbreviated, and brandable.

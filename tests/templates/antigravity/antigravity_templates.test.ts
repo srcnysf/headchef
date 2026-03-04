@@ -1,12 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { generateGeminiMd } from '../../../src/templates/antigravity/gemini_md.js';
-import {
-  generateCodeReviewerSkill,
-  generateTestWriterSkill,
-  generateBugDebuggerSkill,
-  generateArchitecturePlannerSkill,
-  generateDocsKeeperSkill,
-} from '../../../src/templates/antigravity/skills.js';
+import { wrapAsAntigravitySkill } from '../../../src/templates/antigravity/agent_wrapper.js';
+import { loadAgentsByCategory } from '../../../src/templates/agents/registry.js';
 
 describe('antigravity templates', () => {
   describe('generateGeminiMd', () => {
@@ -24,88 +19,23 @@ describe('antigravity templates', () => {
     });
     it('should contain coding style content', () => {
       const result = generateGeminiMd('general');
-      expect(result).toContain('Naming Conventions');
-      expect(result).toContain('Function Guidelines');
+      expect(result).toContain('Nomenclature');
+      expect(result).toContain('Functions');
     });
   });
-  describe('generateCodeReviewerSkill', () => {
+  describe('wrapAsAntigravitySkill', () => {
+    const agents = loadAgentsByCategory('core');
+    const codeReviewer = agents.find(a => a.id === 'code-reviewer')!;
+
     it('should contain frontmatter and skill name', () => {
-      const result = generateCodeReviewerSkill();
+      const result = wrapAsAntigravitySkill(codeReviewer);
       expect(result).toContain('---');
       expect(result).toContain('name: code-reviewer');
     });
-    it('should contain skill title heading', () => {
-      const result = generateCodeReviewerSkill();
-      expect(result).toContain('# Code Reviewer Skill');
-    });
     it('should contain SOLID principles from shared content', () => {
-      const result = generateCodeReviewerSkill();
+      const result = wrapAsAntigravitySkill(codeReviewer);
       expect(result).toContain('SOLID');
       expect(result).toContain('Single Responsibility');
-    });
-  });
-  describe('generateTestWriterSkill', () => {
-    it('should contain frontmatter and skill name', () => {
-      const result = generateTestWriterSkill();
-      expect(result).toContain('---');
-      expect(result).toContain('name: test-writer');
-    });
-    it('should contain skill title heading', () => {
-      const result = generateTestWriterSkill();
-      expect(result).toContain('# Test Writer Skill');
-    });
-    it('should contain Arrange-Act-Assert from shared content', () => {
-      const result = generateTestWriterSkill();
-      expect(result).toContain('Arrange');
-      expect(result).toContain('Assert');
-    });
-  });
-  describe('generateBugDebuggerSkill', () => {
-    it('should contain frontmatter and skill name', () => {
-      const result = generateBugDebuggerSkill();
-      expect(result).toContain('---');
-      expect(result).toContain('name: bug-debugger');
-    });
-    it('should contain skill title heading', () => {
-      const result = generateBugDebuggerSkill();
-      expect(result).toContain('# Bug Debugger Skill');
-    });
-    it('should contain debugging process from shared content', () => {
-      const result = generateBugDebuggerSkill();
-      expect(result).toContain('Reproduce');
-      expect(result).toContain('Root Cause');
-    });
-  });
-  describe('generateArchitecturePlannerSkill', () => {
-    it('should contain frontmatter and skill name', () => {
-      const result = generateArchitecturePlannerSkill();
-      expect(result).toContain('---');
-      expect(result).toContain('name: architecture-planner');
-    });
-    it('should contain skill title heading', () => {
-      const result = generateArchitecturePlannerSkill();
-      expect(result).toContain('# Architecture Planner Skill');
-    });
-    it('should contain design patterns from shared content', () => {
-      const result = generateArchitecturePlannerSkill();
-      expect(result).toContain('Repository Pattern');
-      expect(result).toContain('Strategy Pattern');
-    });
-  });
-  describe('generateDocsKeeperSkill', () => {
-    it('should contain frontmatter and skill name', () => {
-      const result = generateDocsKeeperSkill();
-      expect(result).toContain('---');
-      expect(result).toContain('name: docs-keeper');
-    });
-    it('should contain skill title heading', () => {
-      const result = generateDocsKeeperSkill();
-      expect(result).toContain('# Docs Keeper Skill');
-    });
-    it('should contain documentation types from shared content', () => {
-      const result = generateDocsKeeperSkill();
-      expect(result).toContain('API Documentation');
-      expect(result).toContain('Architecture Decision Records');
     });
   });
 });

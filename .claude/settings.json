@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:www.prompts.chat)",
+      "WebFetch(domain:www.npmjs.com)"
+    ]
+  }
+}

@@ -1,11 +1,15 @@
 import fs from 'fs-extra';
 import path from 'path';
 import os from 'os';
-import type { IdeType, Framework } from './types.js';
+import type { IdeType, Framework, AgentCategory } from './types.js';
 
 export interface RcConfig {
   readonly ides: readonly IdeType[];
   readonly framework: Framework;
+  readonly brainPath?: string;
+  readonly projectsRoot?: string;
+  readonly defaultIde?: string;
+  readonly agentCategories?: readonly AgentCategory[];
 }
 
 function getRcPath(): string {

@@ -25,6 +25,35 @@ export const IDE_METADATA: Record<IdeType, IdeMetadata> = {
 export const FRAMEWORKS = ['general', 'flutter', 'nextjs', 'react', 'python'] as const;
 export type Framework = typeof FRAMEWORKS[number];
 
+export const AGENT_CATEGORIES = [
+  'core', 'engineering', 'design', 'marketing', 'product',
+  'project-management', 'testing', 'support', 'spatial-computing', 'specialized'
+] as const;
+export type AgentCategory = typeof AGENT_CATEGORIES[number];
+
+export interface AgentCategoryMetadata {
+  readonly displayName: string;
+  readonly description: string;
+  readonly agentCount: number;
+}
+
+export const AGENT_CATEGORY_METADATA: Record<AgentCategory, AgentCategoryMetadata> = {
+  core: { displayName: 'Core', description: 'Essential development agents (always included)', agentCount: 6 },
+  engineering: { displayName: 'Engineering', description: 'Frontend, backend, mobile, AI, DevOps', agentCount: 7 },
+  design: { displayName: 'Design', description: 'UI/UX, brand, visual storytelling', agentCount: 7 },
+  marketing: { displayName: 'Marketing', description: 'Growth, content, social media', agentCount: 8 },
+  product: { displayName: 'Product', description: 'Sprint planning, research, feedback', agentCount: 3 },
+  'project-management': { displayName: 'Project Management', description: 'Producers, operations, tracking', agentCount: 5 },
+  testing: { displayName: 'Testing', description: 'QA, performance, API testing', agentCount: 7 },
+  support: { displayName: 'Support', description: 'Customer service, analytics, compliance', agentCount: 6 },
+  'spatial-computing': { displayName: 'Spatial Computing', description: 'XR/VR, Vision Pro, WebXR', agentCount: 6 },
+  specialized: { displayName: 'Specialized', description: 'Data analytics, orchestration, LSP', agentCount: 6 },
+};
+
+export function isValidAgentCategory(value: string): value is AgentCategory {
+  return (AGENT_CATEGORIES as readonly string[]).includes(value);
+}
+
 export interface FileEntry {
   readonly path: string;
   readonly content: string;
@@ -34,6 +63,7 @@ export interface GeneratorOptions {
   readonly targetDir: string;
   readonly ides: readonly IdeType[];
   readonly framework: Framework;
+  readonly agentCategories: readonly AgentCategory[];
   readonly force: boolean;
   readonly dryRun: boolean;
 }

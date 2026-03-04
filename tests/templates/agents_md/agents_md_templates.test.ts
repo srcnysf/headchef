@@ -17,9 +17,11 @@ describe('agents_md templates', () => {
       expect(result).toContain('npm run dev');
       expect(result).toContain('npm test');
     });
-    it('should contain Code Style & Conventions section', () => {
+    it('should contain coding standards sections', () => {
       const result = generateAgentsMd('general');
-      expect(result).toContain('## Code Style & Conventions');
+      expect(result).toContain('## Nomenclature');
+      expect(result).toContain('## Functions');
+      expect(result).toContain('## Security');
     });
     it('should contain condensed SOLID principles', () => {
       const result = generateAgentsMd('general');
@@ -46,10 +48,10 @@ describe('agents_md templates', () => {
       const result = generateAgentsMd('general');
       expect(result.length).toBeGreaterThan(0);
     });
-    it('should be condensed (under 150 lines for general)', () => {
+    it('should be under 250 lines for general', () => {
       const result = generateAgentsMd('general');
       const lineCount = result.split('\n').length;
-      expect(lineCount).toBeLessThan(150);
+      expect(lineCount).toBeLessThan(250);
     });
   });
 });

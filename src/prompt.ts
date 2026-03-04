@@ -1,6 +1,6 @@
 import { checkbox, select } from '@inquirer/prompts';
-import { IDE_TYPES, IDE_METADATA, FRAMEWORKS } from './types.js';
-import type { IdeType, Framework } from './types.js';
+import { IDE_TYPES, IDE_METADATA, FRAMEWORKS, AGENT_CATEGORIES, AGENT_CATEGORY_METADATA } from './types.js';
+import type { IdeType, Framework, AgentCategory } from './types.js';
 
 export async function promptIdeSelection(preSelected?: readonly IdeType[]): Promise<IdeType[]> {
   const preSelectedSet = preSelected ? new Set(preSelected) : null;
@@ -26,6 +26,25 @@ export async function promptFrameworkSelection(): Promise<Framework> {
     choices,
   });
   return selected as Framework;
+}
+
+export async function promptAgentCategorySelection(
+  preSelected?: readonly AgentCategory[]
+): Promise<AgentCategory[]> {
+  const preSelectedSet = preSelected ? new Set(preSelected) : null;
+  const choices = AGENT_CATEGORIES.filter(cat => cat !== 'core').map(cat => {
+    const meta = AGENT_CATEGORY_METADATA[cat];
+    return {
+      name: `${meta.displayName.padEnd(22)} (${meta.agentCount} agents — ${meta.description})`,
+      value: cat,
+      checked: preSelectedSet ? preSelectedSet.has(cat) : false,
+    };
+  });
+  const selected = await checkbox({
+    message: 'Select agent categories to include (core is always included)',
+    choices,
+  });
+  return ['core', ...selected] as AgentCategory[];
 }
 
 export async function promptOverwriteSelection(conflicts: readonly string[]): Promise<string[]> {

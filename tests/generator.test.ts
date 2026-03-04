@@ -12,6 +12,7 @@ function createOptions(targetDir: string, overrides: Partial<GeneratorOptions> =
     framework: 'general',
     force: false,
     dryRun: false,
+    agentCategories: ['core'],
     ...overrides,
   };
 }

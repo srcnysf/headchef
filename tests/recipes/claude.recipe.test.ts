@@ -9,6 +9,7 @@ function createOptions(overrides: Partial<GeneratorOptions> = {}): GeneratorOpti
     framework: 'general',
     force: false,
     dryRun: false,
+    agentCategories: ['core'],
     ...overrides,
   };
 }
@@ -29,7 +30,7 @@ describe('ClaudeRecipe', () => {
     expect(paths).toContain('.claude/agents/bug-debugger.md');
     expect(paths).toContain('.claude/agents/architecture-planner.md');
     expect(paths).toContain('.claude/agents/docs-keeper.md');
-    expect(paths).toContain('.claude/commands/review.md');
+    expect(paths).toContain('.claude/commands/code-review.md');
   });
 
   it('should not generate pr-reviewer agent', () => {
@@ -59,8 +60,12 @@ describe('ClaudeRecipe', () => {
     expect(claudeMd!.content).toContain('Flutter');
   });
 
-  it('should generate 7 files total', () => {
+  it('should generate CLAUDE.md + 6 agents + 15 skills', () => {
     const files = recipe.generateFiles(createOptions());
-    expect(files).toHaveLength(7);
+    expect(files).toHaveLength(22);
+    const paths = files.map(f => f.path);
+    expect(paths.filter(p => p.startsWith('.claude/agents/'))).toHaveLength(6);
+    expect(paths.filter(p => p.startsWith('.claude/commands/'))).toHaveLength(15);
+    expect(paths).toContain('.claude/agents/headchef-orchestrator.md');
   });
 });
